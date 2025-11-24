@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 
 // import mainRouter from "./routes/index.ts";
 import connectDB from "./config/mongodb.ts";
+import mainRouter from "./routes/index.ts";
 
 dotenv.config();
 
@@ -27,7 +28,7 @@ app.get("/", (req: Request, res: Response) => {
   res.json({ message: "hello world he" });
 });
 
-// app.use("/api/v1", mainRouter);
+app.use("/api/v1", mainRouter);
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
