@@ -37,22 +37,23 @@ const Register: React.FC = () => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    try {
-      const res = await api.post("/auth/register", userData);
+  try {
+    const res = await api.post("/auth/register", userData);
 
-      if (res.data.success) {
-        toast.success(res.data.message);
-        navigate("/login");
-      } else {
-        toast.error(res.data.message);
-      }
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Server error");
+    if (res.data.success) {
+      toast.success("OTP sent to your email!");
+      navigate(`/verify-otp?email=${userData.email}`);
+    } else {
+      toast.error(res.data.message);
     }
-  };
+  } catch (err: any) {
+    toast.error(err.response?.data?.message || "Server error");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex flex-col font-['Roboto',sans-serif] bg-[#F5EFE6]">
