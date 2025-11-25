@@ -15,28 +15,28 @@ export interface IUser extends mongoose.Document {
 const authSchema = new Schema<IUser>(
   {
     name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, lowercase: true },
+
+   
+    email: { type: String, required: true, lowercase: true },
+
     password: { type: String, required: true },
+
     role: {
       type: String,
       enum: ["user", "seller", "admin"],
       default: "user",
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    otp: {
-      type: String,
-      default: null,
-    },
-    otpExpires: {
-      type: Date,
-      default: null,
-    },
+
+    isVerified: { type: Boolean, default: false },
+
+    otp: { type: String, default: null },
+    otpExpires: { type: Date, default: null },
   },
   { timestamps: true }
 );
+
+
+authSchema.index({ email: 1, role: 1 }, { unique: true });
 
 const Auth = mongoose.model<IUser>("Auth", authSchema);
 export default Auth;
