@@ -15,7 +15,7 @@ const VerifyOTP = () => {
 
     try {
       const res = await api.post("/auth/verify-otp", { email, otp });
-
+      console.log(res.data)
       if (res.data.success) {
         toast.success("Email verified!");
         navigate("/login");
