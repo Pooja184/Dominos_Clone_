@@ -33,14 +33,14 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 
     // 2. Check if user already exists
-    const existingUser = await Auth.findOne({ email });
-
-    if (existingUser && existingUser.isVerified) {
-      return res.status(400).json({
-        success: false,
-        message: "User already exists",
-      });
-    }
+    const existingUser = await Auth.findOne({ email,role });
+    // console.log(existingUser)
+  if (existingUser && !existingUser.isVerified) {
+  return res.status(400).json({
+    success: false,
+    message: `This email is already registered as ${role}`,
+  });
+}
 
     // 3. Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -82,7 +82,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     await sendEmail(user.email, "Verify your email - Auburn Domino's", html);
 
-    // 7. Response (no token yet)
+    // 7. Response 
     return res.status(201).json({
       success: true,
       message: "OTP sent to your email. Please verify to complete registration.",
