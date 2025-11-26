@@ -1,0 +1,22 @@
+{
+ "compilerOptions": {
+  "module": "nodenext",
+  "target": "esnext",
+
+  "typeRoots": ["./types", "./node_modules/@types"],
+  "types": ["node", "express"],
+
+  "sourceMap": true,
+  "declaration": true,
+  "declarationMap": true,
+
+  "strict": true,
+  "exactOptionalPropertyTypes": true,
+  "noUncheckedIndexedAccess": true,
+  "verbatimModuleSyntax": true,
+  "isolatedModules": true,
+  "moduleDetection": "force",
+  "skipLibCheck": true
+}
+
+}
