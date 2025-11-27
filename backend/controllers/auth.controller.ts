@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import Auth from "../models/auth.model.ts";
-import { tokenGenerator } from "../utils/tokenGenerator";
-import { sendEmail } from "../utils/sendEmail";
+import User from "../models/auth.model.js";
+import { tokenGenerator } from "../utils/tokenGenerator.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 //  Helper to generate 6-digit OTP
 const generateOtp = (): string => {
@@ -15,10 +15,10 @@ const generateOtp = (): string => {
 // =========================
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, confirmPassword, role } = req.body;
+    const { name, email, password, confirmPassword} = req.body;
 
     // 1. Validate fields
-    if (!name || !email || !password || !confirmPassword || !role) {
+    if (!name || !email || !password || !confirmPassword) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -33,12 +33,12 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 
     // 2. Check if user already exists
-    const existingUser = await Auth.findOne({ email,role });
+    const existingUser = await User.findOne({ email });
     // console.log(existingUser)
   if (existingUser && !existingUser.isVerified) {
   return res.status(400).json({
     success: false,
-    message: `This email is already registered as ${role}`,
+    message: `This email is already registered`,
   });
 }
 
@@ -55,17 +55,15 @@ export const registerUser = async (req: Request, res: Response) => {
       // If user exists but is not verified, update OTP & password
       existingUser.name = name;
       existingUser.password = hashedPassword;
-      existingUser.role = role;
       existingUser.otp = otp;
       existingUser.otpExpires = otpExpires;
       user = await existingUser.save();
     } else {
       // 5. Create new user but not verified yet
-      user = await Auth.create({
+      user = await User.create({
         name,
         email,
         password: hashedPassword,
-        role,
         isVerified: false,
         otp,
         otpExpires,
@@ -88,11 +86,12 @@ export const registerUser = async (req: Request, res: Response) => {
       message: "OTP sent to your email. Please verify to complete registration.",
     });
   } catch (error: any) {
-    console.error("Register error:", error);
-    return res.status(500).json({
+     if (error.code === 11000) {
+    return res.status(400).json({
       success: false,
-      message: error.message || "Server error",
+      message: "Email already registered for this role",
     });
+  }
   }
 };
 
@@ -101,6 +100,7 @@ export const registerUser = async (req: Request, res: Response) => {
 // =========================
 export const verifyOtp = async (req: Request, res: Response) => {
   try {
+    // console.log("BODY RECEIVED:", req.body);
     const { email, otp } = req.body;
 
     if (!email || !otp) {
@@ -110,8 +110,8 @@ export const verifyOtp = async (req: Request, res: Response) => {
       });
     }
 
-    const user = await Auth.findOne({ email });
-
+    const user = await User.findOne({ email });
+// console.log(user)
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -173,7 +173,6 @@ export const verifyOtp = async (req: Request, res: Response) => {
       user: {
         name: user.name,
         email: user.email,
-        role: user.role,
       },
     });
   } catch (error: any) {
@@ -193,8 +192,8 @@ export const loginUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     // 1. Find user
-    const user = await Auth.findOne({ email });
-
+    const user = await User.findOne({ email });
+console.log(user)
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -235,7 +234,6 @@ export const loginUser = async (req: Request, res: Response) => {
       user: {
         name: user.name,
         email: user.email,
-        role: user.role,
       },
     });
   } catch (error: any) {
@@ -247,13 +245,54 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
+
+export const getCurrentUser = async (req:Request, res:Response) => {
+  try {
+    console.log(req.userId, "req.userId");
+
+    // FIND USER BY ID
+    const user = await User.findById(req.userId)
+console.log(user)
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // RETURN RESPONSE
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      user: {
+        name: user.name,
+        email: user.email,
+        userId: user._id,
+      
+      },
+    });
+
+  } catch (error) {
+    console.log("getCurrentUser error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in getting current user",
+    });
+  }
+};
+
+
 // =========================
 //  LOGOUT
 // =========================
 export const logoutUser = (req: Request, res: Response) => {
-  res.cookie("token", "", { maxAge: 1 });
-  return res.json({
-    success: true,
-    message: "Logout successful",
-  });
+  try {
+    res.clearCookie("token");
+    return res.json({ success: true, message: "Logout succesfull." });
+  } catch (error) {
+    console.log("error", error);
+    res
+      .status(500)
+      .send({ message: "Error in getting current user", success: false });
+  }
 };
