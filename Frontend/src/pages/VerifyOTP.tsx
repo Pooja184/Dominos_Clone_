@@ -7,6 +7,7 @@ const VerifyOTP = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const email = params.get("email"); // get email passed from register
+  // const role=params.get("role");
 
   const [otp, setOtp] = useState("");
 
@@ -14,7 +15,7 @@ const VerifyOTP = () => {
     e.preventDefault();
 
     try {
-      const res = await api.post("/auth/verify-otp", { email, otp });
+      const res = await api.post("/auth/verify-otp", { email,otp });
       console.log(res.data)
       if (res.data.success) {
         toast.success("Email verified!");
