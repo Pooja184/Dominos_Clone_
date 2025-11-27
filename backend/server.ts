@@ -1,11 +1,12 @@
-import express, { Request, Response } from "express";
+import express from "express"
+import type{ Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
 // import mainRouter from "./routes/index.ts";
-import connectDB from "./config/mongodb.ts";
-import mainRouter from "./routes/index.ts";
+import connectDB from "./config/mongodb.js";
+import mainRouter from "./routes/index.js";
 
 dotenv.config();
 
