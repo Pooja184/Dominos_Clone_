@@ -1,31 +1,22 @@
 import mongoose, { Schema } from "mongoose";
 
-export type authRole = "user" | "seller" | "admin";
+// export type UserRole = "user" | "seller" | "admin";
 
 export interface IUser extends mongoose.Document {
   name: string;
   email: string;
   password: string;
-  role: authRole;
   isVerified: boolean;
   otp?: string | null;
   otpExpires?: Date | null;
 }
 
-const authSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: true, trim: true },
-
-   
     email: { type: String, required: true, lowercase: true },
 
     password: { type: String, required: true },
-
-    role: {
-      type: String,
-      enum: ["user", "seller", "admin"],
-      default: "user",
-    },
 
     isVerified: { type: Boolean, default: false },
 
@@ -35,8 +26,5 @@ const authSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
-
-authSchema.index({ email: 1, role: 1 }, { unique: true });
-
-const Auth = mongoose.model<IUser>("Auth", authSchema);
-export default Auth;
+const User = mongoose.model<IUser>("User", userSchema);
+export default User;
