@@ -14,7 +14,7 @@ interface UserData {
   email: string;
   password: string;
   confirmPassword: string;
-  role: string;
+  // role: string;
 }
 
 const Register: React.FC = () => {
@@ -28,7 +28,7 @@ const Register: React.FC = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "user",
+    // role: "user",
   });
 
   const handleChange = (
@@ -46,6 +46,7 @@ const Register: React.FC = () => {
     if (res.data.success) {
       toast.success("OTP sent to your email!");
       navigate(`/verify-otp?email=${userData.email}`);
+
     } else {
       toast.error(res.data.message);
     }
@@ -74,20 +75,10 @@ const Register: React.FC = () => {
             Register
           </h2>
 
-          {/* Role */}
+          {/* Role
           <div className="mb-3">
-            <label className="block mb-1 text-gray-700">Select Role</label>
-            <select
-              name="role"
-              value={userData.role}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-md"
-            >
-              <option value="user">User</option>
-              <option value="seller">Seller</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
+           
+          </div> */}
 
           {/* Name */}
           <InputField
