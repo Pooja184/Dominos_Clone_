@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 
 export interface AuthRequest extends Request {
   userId: string;
-  role?: string;
   file?: Express.Multer.File;
 }
 
@@ -22,14 +21,14 @@ export const authMiddleware = (
   }
 
   try {
+    // console.log(req.role)
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
       userId: string;
-      role: string;
     };
+    console.log("DECODED TOKEN:", decoded);
 
     req.userId = decoded.userId;
-    req.role = decoded.role;
-
+    // console.log(req.userId,req.role)
     next();
   } catch (error: any) {
     return res.status(401).json({
