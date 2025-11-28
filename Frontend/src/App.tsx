@@ -4,6 +4,8 @@ import RegisterAdmin from "./pages/Register";
 import Login from "./pages/Login";
 import VerifyOTP from "./pages/VerifyOTP";
 import Home from "./pages/Home"
+import HomeSeller from "./pages/seller/HomeSeller";
+import AddProduct from "./pages/seller/AddProduct";
 const App: React.FC = () => {
   return (
     <>
@@ -12,6 +14,11 @@ const App: React.FC = () => {
         <Route path="/register" element={<RegisterAdmin />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/login" element={<Login />} />
+
+        {/* seller routes */}
+        <Route path="/seller-dashboard" element={<HomeSeller/>}>
+          <Route path="add-product" element={<AddProduct/>}/>
+        </Route>
       </Routes>
     </>
   );
