@@ -14,7 +14,7 @@ const ProfileMenu = () => {
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
-console.log(user,"user",isAuthenticated)
+// console.log(user,"user",isAuthenticated)
   // fetch user once on FIRST hover
   const fetchUser = async () => {
     if (loaded) return;
@@ -84,14 +84,14 @@ console.log(user,"user",isAuthenticated)
               onClick={() => navigate("/login")}
               className="cursor-pointer hover:text-accent mb-2"
             >
-              Sign In / Sign Up (User)
+              Sign In / Sign Up
             </p>
-            <p
+            {/* <p
               onClick={() => navigate("/adminlogin")}
               className="cursor-pointer hover:text-accent"
             >
               Login as Admin
-            </p>
+            </p> */}
           </>
         )}
       </div>
