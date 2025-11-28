@@ -37,11 +37,16 @@ const Login: React.FC = () => {
 
     try {
       const res = await api.post("/auth/login", cred);
-
+      console.log(res.data)
       if (res.data.success) {
         dispatch(loginSuccess(res.data.user));
         toast.success("Login Successful!");
-        navigate("/");
+        console.log(res.data.user.role)
+        if(res.data.user.role==="user"){
+          navigate("/")
+        }else if(res.data.user.role==="seller"){
+          navigate("/seller-dashboard")
+        }
       } else {
         toast.error(res.data.message);
       }
