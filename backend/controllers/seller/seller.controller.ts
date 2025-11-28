@@ -53,3 +53,27 @@ export const addProduct = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+export const getSellerProducts = async (req: Request, res: Response) => {
+  try {
+    const sellerId = req.userId;
+
+    const products = await Product.find({ sellerId });
+
+    return res.status(200).json({
+      success: true,
+      count: products.length,
+      products,
+    });
+  } catch (error) {
+    console.log("Get Seller Products Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+
+
