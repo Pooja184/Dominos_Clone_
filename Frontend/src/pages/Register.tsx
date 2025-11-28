@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../axios/axiosInstance.ts";
 import { toast } from "react-toastify";
-import {
-  FaUser,
-  FaEnvelope,
- 
-} from "react-icons/fa";
+import { FaUser, FaEnvelope } from "react-icons/fa";
 import { InputField, PasswordField } from "../components/InputFields.tsx";
 
 interface UserData {
@@ -14,7 +10,7 @@ interface UserData {
   email: string;
   password: string;
   confirmPassword: string;
-  // role: string;
+  role: string;
 }
 
 const Register: React.FC = () => {
@@ -28,7 +24,7 @@ const Register: React.FC = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    // role: "user",
+    role: "user",
   });
 
   const handleChange = (
@@ -38,23 +34,21 @@ const Register: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const res = await api.post("/auth/register", userData);
+    try {
+      const res = await api.post("/auth/register", userData);
 
-    if (res.data.success) {
-      toast.success("OTP sent to your email!");
-      navigate(`/verify-otp?email=${userData.email}`);
-
-    } else {
-      toast.error(res.data.message);
+      if (res.data.success) {
+        toast.success("OTP sent to your email!");
+        navigate(`/verify-otp?email=${userData.email}&role=${userData.role}`);
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Server error");
     }
-  } catch (err: any) {
-    toast.error(err.response?.data?.message || "Server error");
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen flex flex-col font-['Roboto',sans-serif] bg-[#F5EFE6]">
@@ -75,10 +69,22 @@ const Register: React.FC = () => {
             Register
           </h2>
 
-          {/* Role
+          {/* Role Selector */}
           <div className="mb-3">
-           
-          </div> */}
+            <label className="block text-gray-700 font-medium mb-1">
+              Select Role
+            </label>
+            <select
+              name="role"
+              value={userData.role}
+              onChange={handleChange}
+              className="w-full border rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-[#1570c3] text-gray-700"
+            >
+              <option value="user">User</option>
+              <option value="seller">Seller</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
 
           {/* Name */}
           <InputField
