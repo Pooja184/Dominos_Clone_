@@ -37,16 +37,16 @@ export const register = async (req:Request, res:Response) => {
         success: false,
         message: "Email already registered as a User and Seller",
       });
-    // }else if (existingUser) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Email already registered as a User",
-    //   });
-    // }else if (existingSeller) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Email already registered as a Seller",
-    //   });
+    }else if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already registered as a User",
+      });
+    }else if (existingSeller) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already registered as a Seller",
+      });
     }
 
     // Choose correct model
@@ -185,4 +185,66 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+export const getCurrentUser = async (req:Request, res:Response) => {
+  try {
+    // const token = req.cookies.token;
+    // console.log("Token from cookies:", token);
+    console.log(req.userId, "req.userId");
+
+    const isUserExists = await User.findById(req.userId);
+    if (!isUserExists) {
+      var isSellerExists = await Seller.findById(req.userId);
+      if (!isSellerExists) {
+        return res
+          .status(404)
+          .json({ message: "User not found", success: false });
+      }
+
+      return res.status(200).json({
+        message: "Login Successful",
+        success: true,
+        user: {
+          name: isSellerExists.name,
+          userId: isSellerExists._id,
+          role: "seller",
+        },
+      });
+    }
+
+    return res.status(200).json({
+      message: "Login Successful",
+      success: true,
+      user: { name: isUserExists.name, userId: isUserExists._id, role: "user" },
+    });
+  } catch (error) {
+    console.log("error", error);
+    res
+      .status(500)
+      .send({ message: "Error in getting current user", success: false });
+  }
+};
+
+
+export const logoutUser = (req: Request, res: Response) => {
+  try {
+    // Clear token cookie
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false, // set true if HTTPS
+    });
+
+    return res.json({
+      success: true,
+      message: "Logout successful",
+    });
+
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error during logout",
+    });
+  }
+};
 
