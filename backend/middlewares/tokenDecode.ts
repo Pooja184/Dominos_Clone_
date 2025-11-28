@@ -13,10 +13,10 @@ declare global {
 
 export const tokenDecoder = (req: Request, res: Response, next: NextFunction) => {
   try {
-   
+   console.log(req.cookies)
     // Get token from cookies
     const token = req.cookies?.token;
-
+// console.log(token)
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -30,7 +30,7 @@ export const tokenDecoder = (req: Request, res: Response, next: NextFunction) =>
       role: string;
     };
 
-    console.log("Decoded token:", decoded);
+    // console.log("Decoded token:", decoded);
 
     // Attach decoded data to req
     req.userId = decoded.userId;
