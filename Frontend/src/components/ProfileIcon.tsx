@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { IoPersonCircle } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, logoutUser } from "../redux/features/authSlice";
@@ -14,7 +14,8 @@ const ProfileMenu = () => {
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
-// console.log(user,"user",isAuthenticated)
+  console.log(user);
+  // console.log(user,"user",isAuthenticated)
   // fetch user once on FIRST hover
   const fetchUser = async () => {
     if (loaded) return;
@@ -30,11 +31,7 @@ const ProfileMenu = () => {
   };
 
   const handleLogout = async () => {
-    await api.post(
-      "/auth/logout",
-      {},
-      { withCredentials: true }
-    );
+    await api.post("/auth/logout", {}, { withCredentials: true });
     dispatch(logoutUser());
     navigate("/");
     window.location.reload();
@@ -69,7 +66,13 @@ const ProfileMenu = () => {
             >
               My Profile
             </p>
-
+            {user?.role === "seller" ? (
+              <p 
+              className="cursor-pointer hover:text-accent mb-2"
+              onClick={() => navigate("/seller-dashboard")}>
+                Seller Dashboard
+              </p>
+            ) : null}
             <p
               onClick={handleLogout}
               className="cursor-pointer hover:text-accent text-red-500"
