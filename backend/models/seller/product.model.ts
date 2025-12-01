@@ -11,6 +11,7 @@ export interface IProduct extends Document {
   discount?: number;
 
   image: string;
+  imagePublicId:string;
   details?: string[];
 
   sellerId: mongoose.Types.ObjectId;   // RELATION
@@ -29,7 +30,10 @@ const productSchema = new Schema<IProduct>(
     discount: Number,
 
     image: { type: String, required: true },
-
+imagePublicId: {
+  type: String,
+  required: true,
+},
     details: [{ type: String }],
 
     // ⭐ RELATION WITH SELLER COLLECTION
