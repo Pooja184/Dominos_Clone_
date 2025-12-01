@@ -8,6 +8,6 @@ import { addProduct, getSellerProducts } from "../controllers/seller/seller.cont
 const productRouter = Router();
 
 productRouter.post('/add-product',tokenDecoder,isRoleSeller,upload.single("image"),addProduct)
-productRouter.get("/get-products", tokenDecoder, isRoleSeller, getSellerProducts)
+productRouter.get("/my-products", tokenDecoder, isRoleSeller, getSellerProducts)
 
 export default productRouter;
