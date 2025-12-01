@@ -1,9 +1,11 @@
 import type{ Request, Response } from "express";
 import Product from "../../models/seller/product.model.js";
+import { uploadToCloudinary } from "../../config/cloudinary.js";
+import fs from "fs";
 
 export const addProduct = async (req: Request, res: Response) => {
   try {
-    const userId=req.userId;
+    const userId = req.userId;
     const {
       name,
       description,
@@ -15,12 +17,23 @@ export const addProduct = async (req: Request, res: Response) => {
       details,
     } = req.body;
 
-    if(!name ||!description || !category || !type || !price || !originalPrice || !discount || !details){
-        return res.status(400).json({
-          success:false,
-          message:"all fields are required",
-        })
+    // VALIDATION
+    if (
+      !name ||
+      !description ||
+      !category ||
+      !type ||
+      !price ||
+      !originalPrice ||
+      !discount ||
+      !details
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
     }
+
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -28,6 +41,13 @@ export const addProduct = async (req: Request, res: Response) => {
       });
     }
 
+    // 📤 UPLOAD TO CLOUDINARY
+    const cloudinaryImageUrl = await uploadToCloudinary(req.file.path);
+
+    // 🧹 REMOVE TEMP FILE AFTER UPLOAD
+    fs.unlinkSync(req.file.path);
+
+    // SAVE PRODUCT IN DATABASE
     await Product.create({
       name,
       description,
@@ -36,8 +56,8 @@ export const addProduct = async (req: Request, res: Response) => {
       price,
       originalPrice,
       discount,
-      details: details ? JSON.parse(details) : [],
-      image: req.file.filename,
+      details: JSON.parse(details),
+      image: cloudinaryImageUrl, // ⭐ VERY IMPORTANT
       sellerId: userId,
     });
 
@@ -53,6 +73,8 @@ export const addProduct = async (req: Request, res: Response) => {
     });
   }
 };
+
+
 
 
 export const getSellerProducts = async (req: Request, res: Response) => {
