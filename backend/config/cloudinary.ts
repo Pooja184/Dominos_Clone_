@@ -12,13 +12,17 @@ cloudinary.config({
 export const uploadToCloudinary = async (filePath: string) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
-      folder: "dominos/products",  
+      folder: "dominos/products",
     });
 
-    return result.secure_url;
+    return {
+      url: result.secure_url,
+      public_id: result.public_id,
+    };
   } catch (error: any) {
     throw new Error("Cloudinary upload failed: " + error.message);
   }
 };
+
 
 export default cloudinary;
