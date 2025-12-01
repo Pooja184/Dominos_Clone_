@@ -1,6 +1,6 @@
 import type{ Request, Response } from "express";
 import Product from "../../models/seller/product.model.js";
-import { uploadToCloudinary } from "../../config/cloudinary.js";
+import cloudinary, { uploadToCloudinary } from "../../config/cloudinary.js";
 import fs from "fs";
 
 export const addProduct = async (req: Request, res: Response) => {
@@ -57,7 +57,8 @@ export const addProduct = async (req: Request, res: Response) => {
       originalPrice,
       discount,
       details: JSON.parse(details),
-      image: cloudinaryImageUrl, // ⭐ VERY IMPORTANT
+      image: cloudinaryImageUrl.url, //  VERY IMPORTANT
+      imagePublicId: cloudinaryImageUrl.public_id,   // needed for delete
       sellerId: userId,
     });
 
@@ -73,6 +74,7 @@ export const addProduct = async (req: Request, res: Response) => {
     });
   }
 };
+
 
 
 
@@ -98,4 +100,46 @@ export const getSellerProducts = async (req: Request, res: Response) => {
 };
 
 
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.id;
+    const sellerId = req.userId; // seller from tokenDecoder
 
+    // STEP 1: Find product
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // STEP 2: Check ownership
+    if (product.sellerId.toString() !== sellerId) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not allowed to delete this product",
+      });
+    }
+
+    // STEP 3: Delete image from Cloudinary
+    if (product.imagePublicId) {
+      await cloudinary.uploader.destroy(product.imagePublicId);
+    }
+
+    // STEP 4: Delete product from DB
+    await Product.findByIdAndDelete(productId);
+
+    return res.json({
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    console.log("Delete Product Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
