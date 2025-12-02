@@ -33,7 +33,7 @@ export const addProduct = async (req: Request, res: Response) => {
         message: "All fields are required",
       });
     }
-
+    
     if (!req.file) {
       return res.status(400).json({
         success: false,
