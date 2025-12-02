@@ -13,7 +13,7 @@ declare global {
 
 export const tokenDecoder = (req: Request, res: Response, next: NextFunction) => {
   try {
-   console.log(req.cookies)
+  //  console.log(req.cookies)
     // Get token from cookies
     const token = req.cookies?.token;
 // console.log(token)
