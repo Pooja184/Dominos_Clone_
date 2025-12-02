@@ -11,10 +11,10 @@ export interface IProduct extends Document {
   discount?: number;
 
   image: string;
-  imagePublicId:string;
+  imagePublicId: string;
   details?: string[];
 
-  sellerId: mongoose.Types.ObjectId;   // RELATION
+  sellerId: mongoose.Types.ObjectId; // RELATION
 }
 
 const productSchema = new Schema<IProduct>(
@@ -22,7 +22,7 @@ const productSchema = new Schema<IProduct>(
     name: { type: String, required: true },
     description: { type: String, required: true },
 
-    category: { type: String, required: true },
+    category: { type: String, required: true,lowercase:true},
     type: { type: String, enum: ["veg", "non-veg"], required: true },
 
     price: { type: Number, required: true },
@@ -30,10 +30,10 @@ const productSchema = new Schema<IProduct>(
     discount: Number,
 
     image: { type: String, required: true },
-imagePublicId: {
-  type: String,
-  required: true,
-},
+    imagePublicId: {
+      type: String,
+      required: true,
+    },
     details: [{ type: String }],
 
     // ⭐ RELATION WITH SELLER COLLECTION
@@ -46,4 +46,5 @@ imagePublicId: {
   { timestamps: true }
 );
 
-export default mongoose.model<IProduct>("Product", productSchema);
+const Product = mongoose.model<IProduct>("Product", productSchema);
+export default Product;
