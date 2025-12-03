@@ -60,12 +60,12 @@ const ProfileMenu = () => {
           <>
             <p className="mb-2 font-semibold">Hii, {user.name}</p>
 
-            <p
+            {/* <p
               onClick={() => navigate("/profile")}
               className="cursor-pointer hover:text-accent mb-2"
             >
               My Profile
-            </p>
+            </p> */}
             {user?.role === "seller" ? (
               <p 
               className="cursor-pointer hover:text-accent mb-2"
