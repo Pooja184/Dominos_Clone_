@@ -7,6 +7,7 @@ import Home from "./pages/Home"
 import HomeSeller from "./pages/seller/HomeSeller";
 import AddProduct from "./pages/seller/AddProduct";
 import MyProducts from "./pages/seller/MyProducts";
+import IndivisualCategory from "./pages/IndivisualCategory";
 const App: React.FC = () => {
   return (
     <>
@@ -16,6 +17,7 @@ const App: React.FC = () => {
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/login" element={<Login />} />
 
+<Route path="/category/:category" element={<IndivisualCategory/>}/>
         {/* seller routes */}
         <Route path="/seller-dashboard" element={<HomeSeller/>}>
           <Route path="add-product" element={<AddProduct/>}/>
