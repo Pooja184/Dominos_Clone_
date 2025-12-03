@@ -78,7 +78,7 @@ const Sidebar: FC = () => {
           </NavLink>
 
           <NavLink
-            to="/seller/products"
+            to="/seller-dashboard/my-products"
             onClick={() => setOpen(false)}
             className={({ isActive }) =>
               `${linkBase} ${isActive ? activeLink : inactiveLink}`
