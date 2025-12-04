@@ -4,22 +4,12 @@ import { uploadToCloudinary } from "../../config/cloudinary.js";
 import fs from "fs";
 import { Category } from "../../models/categories.model.js";
 
-export const GetProducts = async (req:Request, res:Response) => {
-  try {
-    const products = await Product.find({});
-    return res.json({ success: true, products });
-  } catch (error) {
-    console.log("error", error);
-    res
-      .status(500)
-      .send({ message: "Error in getting current user", success: false });
-  }
-};
+
 
 
 export const addCategories=async(req:Request,res:Response)=>{
   try {
-    const {name}=req.body.toLowerCase();
+    const {name}=req.body;
 
     if(!name){
       return res.status(400).json({
@@ -40,7 +30,7 @@ export const addCategories=async(req:Request,res:Response)=>{
     fs.unlinkSync(req.file.path);
 
     await Category.create({
-      name,
+      name:name.toLowerCase(),
       image:cloudinaryImageUrl.url,
       imagePublicId:cloudinaryImageUrl.public_id
     })
